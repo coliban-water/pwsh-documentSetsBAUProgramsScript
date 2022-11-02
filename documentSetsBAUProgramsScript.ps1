@@ -1,26 +1,36 @@
 try {
     # Change site URL before running this script
-    #$HubSiteURL = "https://colibanwater.sharepoint.com/sites/Projects"
-    $SiteURL = "https://colibanwater.sharepoint.com/sites/PR-9997Testingtheprovisioningengine"
+    # $HubSiteURL = "https://colibanwater.sharepoint.com/sites/Projects"
+    $SiteURL = "https://colibanwater.sharepoint.com/sites/Test"
 
+    # This is the name of the document library containing the document sets
     $DocumentLibraryName = "Subproject Documents"
+
+    # This is the name of the content type that should already exist in the Content Type Gallery
     $ContentTypeName = "BAU Program Subproject"
+
+    # This GUID relates to the feature of enabling document sets in a site
     $EnableDocumentSetFeatureGUID = "3bae86a2-776d-499d-9db8-fa4cdc7884f8"
+
+    # This is the name of the default view in the specified document library
     $ViewName = "All Documents"
+
+    # These are the required metadata columns
     $ColumnName1 = "Project Owner"
     $ColumnName2 = "Subproject Location"
     $ColumnName3 = "Subproject Status"
     $ColumnName4 = "Subproject Year"
 
-    # BAU Program Subproject Content Type (UAT)
-    #$ContentTypeID = "0x0120D52000666D96818FF2EA438EF294E69A1811E0"
-    # BAU Program Subproject Content Type (Production)
+    # BAU Program Subproject Content Type (UAT ONLY)
+    # $ContentTypeID = "0x0120D52000666D96818FF2EA438EF294E69A1811E0"
+
+    # BAU Program Subproject Content Type (Production ONLY)
     $ContentTypeID = "0x0120D52000564F78D02B9EC04D9605534A48E88D79"
 
     # This will connect to the site
     Connect-PnPOnline -Url $SiteURL -Interactive
     
-    # Associate site to hub site
+    # Associate site to hub site (this may not be required)
     # Add-PnPHubToHubAssociation -SourceUrl $HubSiteURL -TargetUrl $SiteURL
 
     # This will enable the document set feature in the site collection
@@ -39,13 +49,14 @@ try {
     Add-PnPContentTypeToList -List $DocumentLibraryName -ContentType $ContentTypeName -DefaultContentType
     
     # This will create the document sets in the document library
-    #<#
     Add-PnPDocumentSet -List $DocumentLibraryName -ContentType $ContentTypeName -Name "1909 files"
     Add-PnPDocumentSet -List $DocumentLibraryName -ContentType $ContentTypeName -Name "2023"
     Add-PnPDocumentSet -List $DocumentLibraryName -ContentType $ContentTypeName -Name "Subproject 1"
     Add-PnPDocumentSet -List $DocumentLibraryName -ContentType $ContentTypeName -Name "Subproject 2"
     Add-PnPDocumentSet -List $DocumentLibraryName -ContentType $ContentTypeName -Name "Subproject 3"
-    #>
+
+    # Check if these document sets were added successfully
+    Write-host -f Green "Documents Sets Added to Subproject Documents Document Library Successfully"
     
     # This will add the required folders to the document set
     #<#
@@ -206,9 +217,10 @@ try {
     Add-PnPFolder -Name "8.4 - Maintenance and Defects Outside Contract" -Folder "$DocumentLibraryName/Subproject 3/08 - Project Close"
     #>
 
-    Write-host -f Green "Documents Sets and Folders Added to Subproject Document Document Library"
+    # Check if these folders were added successfully
+    Write-host -f Green "Folders Added to Subproject Documents Document Library Successfully"
 
-    #Get the Context
+    #Get the Context to modify a list view
     $Context = Get-PnPContext
  
     #Get the List View from the list
@@ -237,8 +249,8 @@ try {
         Write-host -f Yellow "Columns Already Exists in View '$ViewName'"
     }
 
+    # Display this message once all necessary actions have been successfully executed
     Write-host -f Green "You're all good!"
-
 }
 catch {
     write-host "Error: $($_.Exception.Message)" -foregroundcolor Red
